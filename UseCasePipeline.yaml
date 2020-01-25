@@ -4,9 +4,36 @@ Globals:
     Variables:
       TEMPLATE_BUCKET: use_case_pipeline
   Handler: lambdaHandler
+  Role: !Ref CommonLambFormationLambdaRole
 Resources:
   PrepareChangeset:
     Type: AWS::Serverless:Function
-    CodeUri: prepareChangeset.py
-    Description: Lambda function to prepare changeset for useCases
-    FunctionName: LambFormationPrepareChangeset
+    Properties:
+      CodeUri: prepareChangeset.py
+      Description: Lambda function to prepare changeset for useCases
+      FunctionName: LambFormation-prepareChangeset
+  CreateUseCase:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Lambda function to create useCases
+      FunctionName: LambFormation-createUseCase
+  UpdateUseCase:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Lambda function to update useCases
+      FunctionName: LambFormation-updateUseCase
+  DeleteUseCase:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Lambda function to delete useCases
+      FunctionName: LambFormation-deleteUseCase
+  CommonLambFormationLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+
+  UseCaseStateRepository:
+    Type: AWS::CodeCommitRepository
+  BaseUseCaseUserGroup:
+    Description: Generic group for new users on platform with read only permissions
+    Type: AWS::IAM::Group
+    

@@ -2,16 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   UseCaseName:
     Type: String
-    Description: name of UseCase for specific group
+  Users:
+    Type: List<String>
 Resources:
-  UserGroup:
-    Description: UseCaseUser group to later attach users
+  UseCaseIamUserGroup:
     Type: AWS::IAM::Group
-    Properties: 
-    GroupName: !Sub ${UseCaseName}-userGroup
-    ManagedPolicyArns: 
-      - String
-    Path: /
+    Properties:
+      GroupName: !Sub ${UseCaseName}-UserGroup
+      Path: /
+      Policies: 
+        - !Ref UseCaseUserPolicy
   UseCaseRole:
     Description: UseCaseUser group to later attach users
     Type: AWS::IAM::Role
@@ -22,9 +22,18 @@ Resources:
       Path: /
       Roles: 
         - !Ref UseCaseInstanceRole
-  UseCaseUsersPolicy:
-    Description: IAM policy related to only specific UseCase resources
-    Type: AWS::IAM::Policy
+  UseCaseUserPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties: 
+      Description: String
+      ManagedPolicyName: !Sub ${UseCaseName}-UserPolicy
+      Path: /
+      PolicyDocument: 
+        # Fill in YAML format
+      Roles: 
+        - String
+      Users: 
+        - !Ref Users
   UseCaseBucket:
     Description: S3Bucket for useCaseData
     Type: AWS::S3::Bucket
