@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  UseCaseName:
+    Type: String
+    Description: name of UseCase for specific group
+Resources:
+  UserGroup:
+    Description: UseCaseUser group to later attach users
+    Type: AWS::IAM::Group
+    Properties: 
+    GroupName: !Sub ${UseCaseName}-userGroup
+    ManagedPolicyArns: 
+      - String
+    Path: /
+  UseCaseRole:
+    Description: UseCaseUser group to later attach users
+    Type: AWS::IAM::Role
+  UseCaseInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      InstanceProfileName: !Sub ${UseCaseName}-instance
+      Path: /
+      Roles: 
+        - !Ref UseCaseInstanceRole
+  UseCaseUsersPolicy:
+    Description: IAM policy related to only specific UseCase resources
+    Type: AWS::IAM::Policy
+  UseCaseBucket:
+    Description: S3Bucket for useCaseData
+    Type: AWS::S3::Bucket
+  UseCasePortfolio:
+    Type: AWS::ServiceCatalog::Portfolio
+  UseCaseProduct:
+    Type: AWS::ServiceCatalog::Product
+  
+
+

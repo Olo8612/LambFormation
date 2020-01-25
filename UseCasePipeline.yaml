@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Globals:
+  Environment:
+    Variables:
+      TEMPLATE_BUCKET: use_case_pipeline
+  Handler: lambdaHandler
+Resources:
+  PrepareChangeset:
+    Type: AWS::Serverless:Function
+    CodeUri: prepareChangeset.py
+    Description: Lambda function to prepare changeset for useCases
+    FunctionName: LambFormationPrepareChangeset
