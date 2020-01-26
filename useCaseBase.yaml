@@ -1,46 +1,28 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   UseCaseName:
     Type: String
   Users:
     Type: List<String>
 Resources:
-  UseCaseIamUserGroup:
-    Type: AWS::IAM::Group
-    Properties:
-      GroupName: !Sub ${UseCaseName}-UserGroup
-      Path: /
-      Policies: 
-        - !Ref UseCaseUserPolicy
-  UseCaseRole:
+  UseCaseGroup:
     Description: UseCaseUser group to later attach users
-    Type: AWS::IAM::Role
-  UseCaseInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
+    Type: AWS::IAM::Group
     Properties: 
-      InstanceProfileName: !Sub ${UseCaseName}-instance
+      GroupName: !Sub "${UseCaseName}-UserGroup"
+      ManagedPolicyArns: 
+        - !Ref UseCaseUserPolicy
       Path: /
-      Roles: 
-        - !Ref UseCaseInstanceRole
   UseCaseUserPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties: 
       Description: String
-      ManagedPolicyName: !Sub ${UseCaseName}-UserPolicy
+      ManagedPolicyName: !Sub "${UseCaseName}-UserPolicy"
       Path: /
-      PolicyDocument: 
-        # Fill in YAML format
-      Roles: 
-        - String
-      Users: 
-        - !Ref Users
-  UseCaseBucket:
-    Description: S3Bucket for useCaseData
-    Type: AWS::S3::Bucket
-  UseCasePortfolio:
-    Type: AWS::ServiceCatalog::Portfolio
-  UseCaseProduct:
-    Type: AWS::ServiceCatalog::Product
-  
-
-
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - s3:DeleteBucket
+            Effect: Deny
+            Resource: "*"
