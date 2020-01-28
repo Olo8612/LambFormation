@@ -3,7 +3,15 @@ Parameters:
   UseCaseName:
     Type: String
   Users:
-    Type: List<String>
+    Type: CommaDelimitedList
+  UsersExist:
+    Type: String
+    AllowedValues:
+      - "yes"
+      - "no"
+    Default: "no"
+Conditions:
+  CreateUserAttachment: !Not [!Equals [!Ref UsersExist, "no"]]
 Resources:
   UseCaseGroup:
     Description: UseCaseUser group to later attach users
@@ -13,6 +21,12 @@ Resources:
       ManagedPolicyArns: 
         - !Ref UseCaseUserPolicy
       Path: /
+  UsersAttachment:
+    Type: AWS::IAM::UserToGroupAddition
+    Condition: CreateUserAttachment
+    Properties: 
+      GroupName: !Ref UseCaseGroup
+      Users: !Ref Users
   UseCaseUserPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties: 

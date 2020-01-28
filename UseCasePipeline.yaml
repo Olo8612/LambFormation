@@ -8,35 +8,60 @@ Globals:
     Handler: index.lambdaHandler
     Environment:
       Variables:
-        TEMPLATE_BUCKET: use_case_pipeline
+        TEMPLATE_BUCKET: lambformation-demo
+        REPOSITORY_NAME: !GetAtt UseCaseStateRepository.Name
+        STATE_FILE: lambformation-demo
+        CREATE_USER_LAMBDA: 'lambformation-createUser'
+        DELETE_USER_LAMBDA: 'lambformation-deleteUser'
+        CREATE_USECASE_LAMBDA: 'lambformation-createUseCase'
+        UPDATE_USECASE_LAMBDA: 'lambformation-updateUseCase'
+        DELETE_USECASE_LAMBDA: 'lambformation-deleteUseCase'
+        USER_STACK_PREFIX: 'lambformation-user'
+        USE_CASE_STACK_PREFIX: 'lambformation-useCase'
+        USER_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/baseUser.yaml'
+        USE_CASE_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/useCaseBase.yaml'
 Resources:
   PrepareChangeset:
     Type: AWS::Serverless:Function
     Properties:
       CodeUri: lambda/prepareChangeset
       Description: Lambda function to prepare changeset for useCases
-      FunctionName: LambFormation-prepareChangeset
-      Role: !GetAtt UseCasePipelineLambdaRole.Arn 
+      FunctionName: lambformation-prepareChangeset
+      Role: !GetAtt UseCasePipelineLambdaRole.Arn
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/createUser
+      Description: Lambda function to create users
+      FunctionName: lambformation-createUser
+    Role: !Ref CommonLambFormationLambdaRole
+  DeleteUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/deleteUser
+      Description: Lambda function to delete users
+      FunctionName: lambformation-deleteUser
+    Role: !Ref CommonLambFormationLambdaRole
   CreateUseCase:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/createUseCase
       Description: Lambda function to create useCases
-      FunctionName: LambFormation-createUseCase
+      FunctionName: lambformation-createUseCase
     Role: !Ref CommonLambFormationLambdaRole
   UpdateUseCase:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/updateUseCase
       Description: Lambda function to update useCases
-      FunctionName: LambFormation-updateUseCase
+      FunctionName: lambformation-updateUseCase
       Role: !Ref CommonLambFormationLambdaRole
   DeleteUseCase:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/deleteUseCase
       Description: Lambda function to delete useCases
-      FunctionName: LambFormation-deleteUseCase
+      FunctionName: lambformation-deleteUseCase
       Role: !Ref CommonLambFormationLambdaRole
   CommonLambFormationLambdaRole:
     Type: AWS::IAM::Role
@@ -88,10 +113,12 @@ Resources:
                 Action: 
                   - logs:PutLogEvents 
                 Resource: 
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LambFormation-prepareChangeset:*:*'
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LambFormation-createUseCase:*:*'
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LambFormation-deleteUseCase:*:*'
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LambFormation-updateUseCase:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-prepareChangeset:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-createUseCase:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-deleteUseCase:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-updateUseCase:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-createUser:*:*'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambformation-deleteUser:*:*'
               - 
                 Sid: CloudWatchLogStream 
                 Effect: Allow 
@@ -107,10 +134,12 @@ Resources:
                   - lambda:InvokeAsync 
                   - lambda:InvokeFunction 
                 Resource: 
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:LambFormation-createUseCase'
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:LambFormation-updateUseCase'
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:LambFormation-deleteUseCase'
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:LambFormation-prepareChangeset'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-createUseCase'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-updateUseCase'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-deleteUseCase'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-prepareChangeset'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-createUser'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambformation-deleteUser'
               - 
                 Sid: s3Access
                 Effect: Allow
@@ -136,9 +165,9 @@ Resources:
                   - serviceCatalog:*
   UseCaseStateRepository:
     Type: AWS::CodeCommitRepository
-  BaseUseCaseUserGroup:
-    Description: Generic group for new users on platform with read only permissions
-    Type: AWS::IAM::Group
+    Properties: 
+      RepositoryDescription: Repository to track State for resources
+      RepositoryName: lambformation-state
   CodeCommitCloudWatchEventRule: 
     Type: AWS::Events::Rule 
     Properties: 
@@ -160,7 +189,7 @@ Resources:
       Targets: 
         - 
           Arn: !GetAtt PrepareChangeset.Arn 
-          Id: LambFormation-prepareChangeset
+          Id: lambformation-prepareChangeset
   EventPermissionToInvokeLambda: 
     Type: AWS::Lambda::Permission 
     Properties:  

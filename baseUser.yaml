@@ -2,14 +2,11 @@ Description: Base template for user to be used in LambFormation pipeline
 Parameters:
   UserName:
     Type: String
-  UserGroups:
-    Type: CommaDelimitedList
 Resources:
   User:
     Type: AWS::IAM::User
     Properties:
       UserName: !Ref UserName
-      Groups: !Ref UserGroups
       Tags:
         - Key: UserType
           Value: UseCaseUser
