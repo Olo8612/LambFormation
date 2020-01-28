@@ -43,7 +43,7 @@ Resources:
       CodeUri: lambda/prepareChangeset
       Description: Lambda function to prepare changeset for useCases
       FunctionName: lambformation-prepareChangeset
-      Role: !GetAtt UseCasePipelineLambdaRole.Arn
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   CreateUser:
     Type: AWS::Serverless::Function
@@ -51,7 +51,7 @@ Resources:
       CodeUri: lambda/createUser
       Description: Lambda function to create users
       FunctionName: lambformation-createUser
-      Role: !Ref CommonLambFormationLambdaRole
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   DeleteUser:
     Type: AWS::Serverless::Function
@@ -59,7 +59,7 @@ Resources:
       CodeUri: lambda/deleteUser
       Description: Lambda function to delete users
       FunctionName: lambformation-deleteUser
-      Role: !Ref CommonLambFormationLambdaRole
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   CreateUseCase:
     Type: AWS::Serverless::Function
@@ -67,7 +67,7 @@ Resources:
       CodeUri: lambda/createUseCase
       Description: Lambda function to create useCases
       FunctionName: lambformation-createUseCase
-      Role: !Ref CommonLambFormationLambdaRole
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   UpdateUseCase:
     Type: AWS::Serverless::Function
@@ -75,7 +75,7 @@ Resources:
       CodeUri: lambda/updateUseCase
       Description: Lambda function to update useCases
       FunctionName: lambformation-updateUseCase
-      Role: !Ref CommonLambFormationLambdaRole
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   DeleteUseCase:
     Type: AWS::Serverless::Function
@@ -83,7 +83,7 @@ Resources:
       CodeUri: lambda/deleteUseCase
       Description: Lambda function to delete useCases
       FunctionName: lambformation-deleteUseCase
-      Role: !Ref CommonLambFormationLambdaRole
+      Role: !GetAtt CommonLambFormationLambdaRole.Arn
       Layers: !Ref CommonLayer
   CommonLambFormationLambdaRole:
     Type: AWS::IAM::Role
