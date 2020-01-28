@@ -1,14 +1,15 @@
 import boto3
-from userGroupHandling import cleanUpUserGroup
+import os
+
+USE_CASE_STACK_PREFIX = os.environ['USE_CASE_STACK_PREFIX']
 
 cfClient = boto3.client('cloudformation')
 
 def lambdaHandler(event, context):
+    print(event)
     useCaseToDelete = event['useCaseName']
-    cleanUpUserGroup(useCaseToDelete)
     
-    useCaseStackName = f'lambformation-{useCaseToDelete}-resources'
-    cfClient.delete_stack(
+    useCaseStackName = f'{USE_CASE_STACK_PREFIX}{useCaseToDelete}'
+    response = cfClient.delete_stack(
         StackName=useCaseStackName,
-    )
-    
+    )    

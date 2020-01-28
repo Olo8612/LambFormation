@@ -16,8 +16,8 @@ Globals:
         CREATE_USECASE_LAMBDA: 'lambformation-createUseCase'
         UPDATE_USECASE_LAMBDA: 'lambformation-updateUseCase'
         DELETE_USECASE_LAMBDA: 'lambformation-deleteUseCase'
-        USER_STACK_PREFIX: 'lambformation-user'
-        USE_CASE_STACK_PREFIX: 'lambformation-useCase'
+        USER_STACK_PREFIX: 'lambformation-user-'
+        USE_CASE_STACK_PREFIX: 'lambformation-useCase-'
         USER_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/baseUser.yaml'
         USE_CASE_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/useCaseBase.yaml'
 Resources:

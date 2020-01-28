@@ -12,7 +12,7 @@ def lambdaHandler(event, context):
     createAttachment = 'yes'
     if users == []:
         createAttachment = 'no'
-    stackName = f'{USE_CASE_STACK_PREFIX}-{useCaseName}'
+    stackName = f'{USE_CASE_STACK_PREFIX}{useCaseName}'
     cfClient.update_stack(
         StackName=stackName,
         UsePreviousTemplate=True,
