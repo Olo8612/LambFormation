@@ -21,6 +21,22 @@ Globals:
         USER_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/baseUser.yaml'
         USE_CASE_TEMPLATE_URL: 'https://lambformation-demo.s3.eu-central-1.amazonaws.com/useCaseBase.yaml'
 Resources:
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.6
+        - python3.7
+      ContentUri: lambda/common
+      LayerName: lambformation-common
+  # ExternalLibrariesLayer:
+  #   Type: AWS::Serverless:LayerVersion
+  #   Properties:
+  #     CompatibleRuntimes:
+  #       - python3.6
+  #       - python3.7
+  #     ContentUri: lambda/externalLibraries
+  #     LayerName: lambformation-externalLibraries
   PrepareChangeset:
     Type: AWS::Serverless:Function
     Properties:
@@ -28,27 +44,31 @@ Resources:
       Description: Lambda function to prepare changeset for useCases
       FunctionName: lambformation-prepareChangeset
       Role: !GetAtt UseCasePipelineLambdaRole.Arn
+      Layers: !Ref CommonLayer
   CreateUser:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/createUser
       Description: Lambda function to create users
       FunctionName: lambformation-createUser
-    Role: !Ref CommonLambFormationLambdaRole
+      Role: !Ref CommonLambFormationLambdaRole
+      Layers: !Ref CommonLayer
   DeleteUser:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/deleteUser
       Description: Lambda function to delete users
       FunctionName: lambformation-deleteUser
-    Role: !Ref CommonLambFormationLambdaRole
+      Role: !Ref CommonLambFormationLambdaRole
+      Layers: !Ref CommonLayer
   CreateUseCase:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/createUseCase
       Description: Lambda function to create useCases
       FunctionName: lambformation-createUseCase
-    Role: !Ref CommonLambFormationLambdaRole
+      Role: !Ref CommonLambFormationLambdaRole
+      Layers: !Ref CommonLayer
   UpdateUseCase:
     Type: AWS::Serverless::Function
     Properties:
@@ -56,6 +76,7 @@ Resources:
       Description: Lambda function to update useCases
       FunctionName: lambformation-updateUseCase
       Role: !Ref CommonLambFormationLambdaRole
+      Layers: !Ref CommonLayer
   DeleteUseCase:
     Type: AWS::Serverless::Function
     Properties:
@@ -63,9 +84,9 @@ Resources:
       Description: Lambda function to delete useCases
       FunctionName: lambformation-deleteUseCase
       Role: !Ref CommonLambFormationLambdaRole
+      Layers: !Ref CommonLayer
   CommonLambFormationLambdaRole:
     Type: AWS::IAM::Role
-    Properties:
     Properties: 
       AssumeRolePolicyDocument: 
         Version: 2012-10-17 
@@ -163,6 +184,7 @@ Resources:
                 Effect: Allow
                 Action:
                   - serviceCatalog:*
+                Resource: "*"
   UseCaseStateRepository:
     Type: AWS::CodeCommitRepository
     Properties: 
