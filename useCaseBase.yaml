@@ -3,7 +3,7 @@ Parameters:
   UseCaseName:
     Type: String
   Users:
-    Type: CommaDelimitedList
+    Type: List<String>
   UsersExist:
     Type: String
     AllowedValues:

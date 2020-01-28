@@ -14,7 +14,7 @@ def getStateFromAWS():
         userSet.add(user.replace(USER_STACK_PREFIX, ''))
     for useCaseStack in useCaseStackList:
         usersParameter = cfClient.describe_stacks(
-            StackName = useCase
+            StackName = useCaseStack
         )['Stacks'][0]['Parameters']
         useCase = useCaseStack.replace(USE_CASE_STACK_PREFIX, '')
         stateDict[useCase] = usersParameter[1]['ParameterValue']

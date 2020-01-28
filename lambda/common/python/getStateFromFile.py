@@ -10,9 +10,8 @@ codeCommitClient = boto3.client('codecommit')
 def getStateFromFile():
     try:
         desiredState = codeCommitClient.get_file(
-            repositoryName='string',
-            commitSpecifier='string',
-            filePath='string'
+            repositoryName=REPOSITORY_NAME,
+            filePath=STATE_FILE
         )
         usersFile = yaml.safe_load(desiredState['fileContent'])
     except ClientError as e:

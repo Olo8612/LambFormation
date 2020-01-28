@@ -8,6 +8,7 @@ USE_CASE_TEMPLATE_URL = os.environ['USE_CASE_TEMPLATE_URL']
 def lambdaHandler(event, context):
     useCaseName = event['useCaseName']
     users = event['users']
+    users = ', '.join(users)
     createAttachment = 'yes'
     if users == []:
         createAttachment = 'no'
@@ -17,7 +18,7 @@ def lambdaHandler(event, context):
         UsePreviousTemplate=True,
         Parameters=[
             {
-                'ParameterKey': 'UserName',
+                'ParameterKey': 'UseCaseName',
                 'ParameterValue': useCaseName,
             },
             {

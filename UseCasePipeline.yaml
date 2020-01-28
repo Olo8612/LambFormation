@@ -29,22 +29,24 @@ Resources:
         - python3.7
       ContentUri: lambda/common
       LayerName: lambformation-common
-  # ExternalLibrariesLayer:
-  #   Type: AWS::Serverless:LayerVersion
-  #   Properties:
-  #     CompatibleRuntimes:
-  #       - python3.6
-  #       - python3.7
-  #     ContentUri: lambda/externalLibraries
-  #     LayerName: lambformation-externalLibraries
+  ExternalLibrariesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.6
+        - python3.7
+      ContentUri: lambda/externalLibraries
+      LayerName: lambformation-externalLibraries
   PrepareChangeset:
-    Type: AWS::Serverless:Function
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambda/prepareChangeset
       Description: Lambda function to prepare changeset for useCases
       FunctionName: lambformation-prepareChangeset
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   CreateUser:
     Type: AWS::Serverless::Function
     Properties:
@@ -52,7 +54,9 @@ Resources:
       Description: Lambda function to create users
       FunctionName: lambformation-createUser
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   DeleteUser:
     Type: AWS::Serverless::Function
     Properties:
@@ -60,7 +64,9 @@ Resources:
       Description: Lambda function to delete users
       FunctionName: lambformation-deleteUser
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   CreateUseCase:
     Type: AWS::Serverless::Function
     Properties:
@@ -68,7 +74,9 @@ Resources:
       Description: Lambda function to create useCases
       FunctionName: lambformation-createUseCase
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   UpdateUseCase:
     Type: AWS::Serverless::Function
     Properties:
@@ -76,7 +84,9 @@ Resources:
       Description: Lambda function to update useCases
       FunctionName: lambformation-updateUseCase
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   DeleteUseCase:
     Type: AWS::Serverless::Function
     Properties:
@@ -84,7 +94,9 @@ Resources:
       Description: Lambda function to delete useCases
       FunctionName: lambformation-deleteUseCase
       Role: !GetAtt CommonLambFormationLambdaRole.Arn
-      Layers: !Ref CommonLayer
+      Layers: 
+        - !Ref CommonLayer
+        - !Ref ExternalLibrariesLayer
   CommonLambFormationLambdaRole:
     Type: AWS::IAM::Role
     Properties: 
@@ -186,7 +198,7 @@ Resources:
                   - serviceCatalog:*
                 Resource: "*"
   UseCaseStateRepository:
-    Type: AWS::CodeCommitRepository
+    Type: AWS::CodeCommit::Repository
     Properties: 
       RepositoryDescription: Repository to track State for resources
       RepositoryName: lambformation-state
