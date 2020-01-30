@@ -6,7 +6,7 @@ USER_TEMPLATE_URL = os.environ['USER_TEMPLATE_URL']
 USER_STACK_PREFIX = os.environ['USER_STACK_PREFIX']
 
 def lambdaHandler(event, context):
-    stackName = f'{USER_STACK_PREFIX}-{event["UserName"]}'
+    stackName = f'{USER_STACK_PREFIX}{event["UserName"]}'
     cfClient.create_stack(
         StackName=stackName,
         TemplateURL=USER_TEMPLATE_URL,

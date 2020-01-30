@@ -10,7 +10,7 @@ def lambdaHandler(event, context):
     
     cleanUpUser(userToDelete)
     
-    userStack = f'{USER_STACK_PREFIX}-{userToDelete}'
+    userStack = f'{USER_STACK_PREFIX}{userToDelete}'
     cfClient.delete_stack(
         StackName=userStack
     )
